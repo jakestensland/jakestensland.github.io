@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Meal Planner</title>
+    <link rel="stylesheet" href="meal-planner.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login/Profile Section -->
+        <div id="auth-section">
+            <header>
+                <h1>🍽️ Weekly Meal Planner</h1>
+            </header>
+            <div class="auth-form">
+                <h2>Welcome to Meal Planner</h2>
+                <div class="security-notice">
+                    ⚠️ For demo purposes only. Use HTTPS in production.
+                </div>
+                <input type="text" id="username" placeholder="Username (min 3 chars)" required maxlength="50">
+                <input type="password" id="password" placeholder="Password (8+ chars, mixed case, number)" required maxlength="100">
+                <input type="password" id="confirm-password" placeholder="Confirm Password (for new accounts)" maxlength="100">
+                <button id="auth-btn" class="btn-primary">Login / Sign Up</button>
+                <p class="auth-help">Enter username and password. If account doesn't exist, it will be created.</p>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="app-section" class="hidden">
+            <header>
+                <h1>🍽️ Weekly Meal Planner</h1>
+                <div class="header-controls">
+                    <button id="dark-mode-toggle" class="btn-icon" title="Toggle Dark Mode">🌙</button>
+                    <button id="voice-input-btn" class="btn-icon" title="Voice Input">🎤</button>
+                    <button id="camera-btn" class="btn-icon" title="Scan Recipe">📷</button>
+                    <div class="user-info">
+                        <span id="welcome-text"></span>
+                        <button id="logout-btn" class="btn-secondary">Log Out</button>
+                    </div>
+                </div>
+            </header>
+
+        <main>
+            <div class="week-grid">
+                <div class="day-header">Day</div>
+                <div class="meal-header">Breakfast</div>
+                <div class="meal-header">Lunch</div>
+                <div class="meal-header">Dinner</div>
+
+                <div class="day-label">Monday</div>
+                <div class="meal-slot" data-day="monday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="monday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="monday" data-meal="dinner">+</div>
+
+                <div class="day-label">Tuesday</div>
+                <div class="meal-slot" data-day="tuesday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="tuesday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="tuesday" data-meal="dinner">+</div>
+
+                <div class="day-label">Wednesday</div>
+                <div class="meal-slot" data-day="wednesday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="wednesday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="wednesday" data-meal="dinner">+</div>
+
+                <div class="day-label">Thursday</div>
+                <div class="meal-slot" data-day="thursday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="thursday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="thursday" data-meal="dinner">+</div>
+
+                <div class="day-label">Friday</div>
+                <div class="meal-slot" data-day="friday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="friday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="friday" data-meal="dinner">+</div>
+
+                <div class="day-label">Saturday</div>
+                <div class="meal-slot" data-day="saturday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="saturday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="saturday" data-meal="dinner">+</div>
+
+                <div class="day-label">Sunday</div>
+                <div class="meal-slot" data-day="sunday" data-meal="breakfast">+</div>
+                <div class="meal-slot" data-day="sunday" data-meal="lunch">+</div>
+                <div class="meal-slot" data-day="sunday" data-meal="dinner">+</div>
+            </div>
+
+            <div class="actions">
+                <button id="add-meal-btn" class="btn-primary">Add New Meal</button>
+                <button id="suggest-meal-btn" class="btn-secondary">Get Suggestions</button>
+                <button id="grocery-list-btn" class="btn-success">Generate Grocery List</button>
+                <button id="clear-week-btn" class="btn-warning">Clear Week</button>
+            </div>
+            
+            <div class="secondary-actions">
+                <button id="favorites-btn" class="btn-outline">⭐ Favorites</button>
+                <button id="meal-prep-btn" class="btn-outline">🍱 Meal Prep</button>
+                <button id="export-calendar-btn" class="btn-outline">📅 Export Calendar</button>
+                <button id="export-data-btn" class="btn-outline">Export Data</button>
+                <button id="import-data-btn" class="btn-outline">Import Data</button>
+                <input type="file" id="import-file" accept=".json" style="display:none">
+                <button id="analytics-btn" class="btn-outline">View Analytics</button>
+            </div>
+            
+            <div class="color-legend">
+                <span class="legend-item"><span class="color-dot breakfast"></span>Breakfast</span>
+                <span class="legend-item"><span class="color-dot lunch"></span>Lunch</span>
+                <span class="legend-item"><span class="color-dot dinner"></span>Dinner</span>
+            </div>
+            
+            <div class="keyboard-shortcuts" id="shortcuts-help" style="display:none">
+                <h3>Keyboard Shortcuts</h3>
+                <p><kbd>A</kbd> - Add Meal | <kbd>S</kbd> - Suggestions | <kbd>G</kbd> - Grocery List | <kbd>C</kbd> - Clear Week | <kbd>D</kbd> - Dark Mode | <kbd>?</kbd> - Help</p>
+            </div>
+        </main>
+        </div>
+
+        <!-- Modal for adding meals -->
+        <div id="meal-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add Meal</h2>
+                <form id="meal-form">
+                    <input type="text" id="meal-name" placeholder="Meal name" required>
+                    <select id="meal-type" required>
+                        <option value="">Select Meal Type</option>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                    </select>
+                    <select id="meal-category">
+                        <option value="">Select Category</option>
+                        <option value="american">American</option>
+                        <option value="italian">Italian</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="asian">Asian</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                    </select>
+                    <input type="number" id="cook-time" placeholder="Cook time (minutes)" min="1">
+                    <input type="number" id="servings" placeholder="Servings" min="1" value="4">
+                    <input type="number" id="calories" placeholder="Calories per serving" min="0">
+                    <input type="number" id="cost" placeholder="Estimated cost ($)" min="0" step="0.01">
+                    <textarea id="instructions" placeholder="Cooking instructions" rows="4"></textarea>
+                    <input type="file" id="meal-photo" accept="image/*">
+                    <div id="ingredients-container">
+                        <div class="ingredient-row">
+                            <input type="text" placeholder="Ingredient" required>
+                            <input type="text" placeholder="Amount" required>
+                            <input type="number" placeholder="Cost" step="0.01">
+                        </div>
+                    </div>
+                    <button type="button" id="add-ingredient">+ Add Ingredient</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Meal</button>
+                        <button type="button" class="btn-cancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for meal suggestions -->
+        <div id="suggestions-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Meal Suggestions</h2>
+                <div class="search-filters">
+                    <input type="text" id="search-meals" placeholder="Search meals...">
+                    <select id="filter-category">
+                        <option value="">All Categories</option>
+                        <option value="american">American</option>
+                        <option value="italian">Italian</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="asian">Asian</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                    </select>
+                    <select id="filter-time">
+                        <option value="">Any Time</option>
+                        <option value="15">Under 15 min</option>
+                        <option value="30">Under 30 min</option>
+                        <option value="60">Under 1 hour</option>
+                    </select>
+                </div>
+                <div id="suggestions-list"></div>
+            </div>
+        </div>
+
+        <!-- Modal for selecting meal -->
+        <div id="select-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Select Meal</h2>
+                <div class="meal-actions">
+                    <button id="scale-portions" class="btn-outline">Scale Portions</button>
+                    <input type="number" id="portion-scale" value="1" min="0.5" max="10" step="0.5" style="width:80px">
+                </div>
+                <div id="meal-options"></div>
+            </div>
+        </div>
+        
+        <!-- Grocery List Modal -->
+        <div id="grocery-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Grocery List</h2>
+                <div class="grocery-actions">
+                    <button id="export-grocery" class="btn-outline">Export List</button>
+                    <span id="total-cost"></span>
+                </div>
+                <div id="grocery-list"></div>
+            </div>
+        </div>
+        
+        <!-- Analytics Modal -->
+        <div id="analytics-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Meal Analytics</h2>
+                <div id="analytics-content"></div>
+            </div>
+        </div>
+        
+        <!-- Recipe Details Modal -->
+        <div id="recipe-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="recipe-content"></div>
+            </div>
+        </div>
+        
+        <!-- Favorites Modal -->
+        <div id="favorites-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>⭐ Favorite Meals</h2>
+                <div id="favorites-list"></div>
+            </div>
+        </div>
+        
+        <!-- Meal Prep Modal -->
+        <div id="meal-prep-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>🍱 Meal Prep Mode</h2>
+                <div id="meal-prep-content"></div>
+            </div>
+        </div>
+        
+        <!-- Voice Input Modal -->
+        <div id="voice-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>🎤 Voice Input</h2>
+                <div class="voice-controls">
+                    <button id="start-voice" class="btn-primary">Start Listening</button>
+                    <button id="stop-voice" class="btn-secondary">Stop</button>
+                </div>
+                <div id="voice-result"></div>
+            </div>
+        </div>
+        
+        <!-- Camera Modal -->
+        <div id="camera-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>📷 Scan Recipe</h2>
+                <video id="camera-video" autoplay></video>
+                <canvas id="camera-canvas" style="display:none"></canvas>
+                <div class="camera-controls">
+                    <button id="capture-btn" class="btn-primary">Capture</button>
+                    <button id="switch-camera" class="btn-secondary">Switch Camera</button>
+                </div>
+                <div id="ocr-result"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+    
+
+    
+    <!-- Pull to Refresh -->
+    <div id="pull-refresh" class="hidden">
+        <div class="refresh-icon">↻</div>
+        <span>Pull to refresh</span>
+    </div>
+    
+    <script src="meal-planner.js"></script>
+</body>
+</html>
